@@ -1,0 +1,18 @@
+service: sparrow
+
+provider:
+  name: aws
+  region: eu-west-1
+  runtime: java8
+
+package:
+  artifact: target/sparrow.jar
+
+functions:
+  main:
+    handler: sparrow.Handler
+    events:
+      - http:
+          path: hello
+          method: get
+          cors: true
