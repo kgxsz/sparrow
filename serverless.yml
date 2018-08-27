@@ -4,13 +4,20 @@ provider:
   name: aws
   region: eu-west-1
   runtime: java8
+  stage: production
+  stackName: sparrow
+  apiName: sparrow
+  deploymentBucket:
+    name: sparrow-resources
+  versionFunctions: false
 
 package:
   artifact: target/sparrow.jar
 
 functions:
-  main:
+  core:
     handler: sparrow.Handler
+    name: sparrow
     events:
       - http:
           path: hello
