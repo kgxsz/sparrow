@@ -5,11 +5,23 @@ provider:
   region: eu-west-1
   runtime: java8
   stage: production
-  stackName: sparrow
-  apiName: sparrow
   deploymentBucket:
-    name: sparrow-resources
-  versionFunctions: false
+    name: api.gridr.io
+  environment:
+    tableName:
+      Ref: usersTable
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - "Fn::GetAtt": [ usersTable , Arn ]
 
 package:
   artifact: target/sparrow.jar
@@ -20,6 +32,29 @@ functions:
     name: sparrow
     events:
       - http:
-          path: hello
-          method: get
-          cors: true
+          path: /
+          method: post
+
+plugins:
+  - serverless-finch
+
+custom:
+  client:
+    bucketName: app.gridr.io
+    distributionFolder: resources/public
+
+resources:
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: usersTable
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
