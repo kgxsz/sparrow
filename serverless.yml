@@ -4,8 +4,9 @@ provider:
   name: aws
   region: eu-west-1
   runtime: java8
-  stage: production
+  stage: default
   stackName: sparrow
+  apiName: sparrow
   role: sparrowRole
   deploymentBucket:
     name: api.gridr.io
