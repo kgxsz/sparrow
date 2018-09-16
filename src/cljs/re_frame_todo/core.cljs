@@ -7,9 +7,8 @@
             [re-frame-todo.config :as config]))
 
 (defn dev-setup []
-  (when config/debug?
-    (enable-console-print!)
-    (println "dev mode")))
+  (enable-console-print!)
+  (js/console.warn "dev mode"))
 
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
@@ -18,5 +17,5 @@
 
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
-  (dev-setup)
+  (when config/debug? (dev-setup))
   (mount-root))

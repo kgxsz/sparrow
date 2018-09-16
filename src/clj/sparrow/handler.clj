@@ -13,13 +13,14 @@
     (let [ddb-config {:access-key (System/getenv "ACCESS_KEY")
                       :secret-key (System/getenv "SECRET_KEY")
                       :endpoint "http://dynamodb.eu-west-1.amazonaws.com"}
-          tables (faraday/describe-table ddb-config "sparrow-users")
-          _      (faraday/put-item ddb-config "sparrow-users" {:email (str "k.suzukawa+" (rand-int 99999999) "@gmail.com")
-                                                            :foo {:bar "hello"}})
+          _      (faraday/put-item ddb-config "sparrow-items" (let [added-at (rand-int 9999999)]
+                                                                {:added-at added-at
+                                                                 :text (str "item - " added-at)
+                                                                 :checked? false}))
+          items (faraday/scan ddb-config "sparrow-items")
           response {:statusCode 200
-                    :headers {}
-                    :body (generate-string {:hello "world"
-                                            :tables tables})}]
+                    :headers {"Access-Control-Allow-Origin" "*"}
+                    :body (generate-string items)}]
       (generate-stream response writer))))
 
 ; Look into adding an item to a DDB table every time you call the endpoint [DONE]
@@ -28,6 +29,9 @@
 ; See about kicking a static webpage using Finch [DONE]
 ; Setup https with app.gridr.io
 ; basic todo list using existing re-frame application working
+; rename subs to subscriptions
+; rename folder structure
+; make a side-effects file
 
 
 ; Manual steps:

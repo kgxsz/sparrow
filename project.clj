@@ -3,6 +3,7 @@
                  [org.clojure/clojurescript "1.10.339"]
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
+                 [cljs-ajax "0.7.4"]
                  [com.amazonaws/aws-lambda-java-core "1.0.0"]
                  [com.taoensso/faraday "1.9.0"]
                  [cheshire "5.8.0"]]
@@ -22,6 +23,7 @@
                    :figwheel {:css-dirs ["resources/public/css"]}}
 
              :uberjar {:aot :all
+                       :uberjar-exclusions [#"resources/public/.*"]
                        :uberjar-name "sparrow.jar"}}
 
   :cljsbuild {:builds [{:id "dev"
