@@ -4,7 +4,6 @@
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
                  [cljs-ajax "0.7.4"]
-                 [medley "1.0.0"]
                  [com.amazonaws/aws-lambda-java-core "1.0.0"]
                  [com.taoensso/faraday "1.9.0"]
                  [cheshire "5.8.0"]]

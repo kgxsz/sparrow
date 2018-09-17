@@ -2,6 +2,7 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [sparrow.config :as config]
+            [sparrow.effects :as effects]
             [sparrow.events :as events]
             [sparrow.subscriptions :as subscriptions]
             [sparrow.views :as views]))

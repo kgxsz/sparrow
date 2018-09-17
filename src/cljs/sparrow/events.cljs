@@ -1,6 +1,5 @@
 (ns sparrow.events
   (:require [ajax.core :as ajax]
-            [medley.core :as medley]
             [re-frame.core :as re-frame]
             [sparrow.interceptors :as interceptors]))
 
@@ -15,6 +14,7 @@
          :item-list '()
          :input-value ""
          :sort-by-desc-added-at? true}}))
+
 
 (re-frame/reg-event-fx
  :query-succeeded
@@ -35,22 +35,13 @@
    (js/console.warn response)
    {:db db #_(assoc db :input-value input-value)}))
 
-;; TODO - put this in its own file
-(re-frame/reg-fx
- :query
- (fn [[query-type & args]]
-   (ajax/POST "https://api.gridr.io"
-              {:params {}
-               :handler (fn [response] (re-frame/dispatch [:query-succeeded query-type response]))
-               :error-handler (fn [response] (re-frame/dispatch [:query-failed query-type response]))
-               :response-format :json
-               :keywords? true})))
 
 (re-frame/reg-event-fx
  :update-input-value
  [interceptors/schema]
  (fn [{:keys [db]} [_ input-value]]
    {:db (assoc db :input-value input-value)}))
+
 
 (re-frame/reg-event-fx
  :add-item-to-item-list
@@ -66,11 +57,13 @@
               (update-in [:item-list] (partial cons added-at))
               (update :item-list #(sort (if sort-by-desc-added-at? > <) %)))})))
 
+
 (re-frame/reg-event-fx
  :toggle-item-checked?
  [interceptors/schema]
  (fn [{:keys [db]} [_ added-at]]
    {:db (update-in db [:items-by-added-at added-at :checked?] not)}))
+
 
 (re-frame/reg-event-fx
  :delete-item-from-item-list
