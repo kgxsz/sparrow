@@ -1,6 +1,6 @@
-(ns re-frame-todo.views
+(ns sparrow.views
   (:require [re-frame.core :as re-frame]
-            [re-frame-todo.schema :as schema]
+            [sparrow.schema :as schema]
             [cljs.spec.alpha :as spec]))
 
 (defn item-adder []

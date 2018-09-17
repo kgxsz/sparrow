@@ -1,7 +1,8 @@
-(ns re-frame-todo.schema
+(ns sparrow.schema
   (:require [cljs.spec.alpha :as spec]
             [clojure.string :as str]))
 
+;; TODO - do you need to namespace these like that?
 (spec/def ::added-at int?)
 
 (spec/def ::text (spec/and string?

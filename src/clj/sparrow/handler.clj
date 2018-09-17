@@ -1,5 +1,5 @@
 (ns sparrow.handler
-  (:require [cheshire.core :refer [generate-stream parse-stream generate-string]]
+  (:require [cheshire.core :as cheshire]
             [taoensso.faraday :as faraday]
             [clojure.java.io :as io])
   (:import [com.amazonaws.services.lambda.runtime.RequestStreamHandler])
@@ -13,15 +13,15 @@
     (let [ddb-config {:access-key (System/getenv "ACCESS_KEY")
                       :secret-key (System/getenv "SECRET_KEY")
                       :endpoint "http://dynamodb.eu-west-1.amazonaws.com"}
-          _      (faraday/put-item ddb-config "sparrow-items" (let [added-at (rand-int 9999999)]
+          #__      #_(faraday/put-item ddb-config "sparrow-items" (let [added-at (rand-int 9999999)]
                                                                 {:added-at added-at
                                                                  :text (str "item - " added-at)
                                                                  :checked? false}))
           items (faraday/scan ddb-config "sparrow-items")
           response {:statusCode 200
                     :headers {"Access-Control-Allow-Origin" "*"}
-                    :body (generate-string items)}]
-      (generate-stream response writer))))
+                    :body (cheshire/generate-string {:items items})}]
+      (cheshire/generate-stream response writer))))
 
 ; Look into adding an item to a DDB table every time you call the endpoint [DONE]
 ; Split endpoints out into query and command, with post payloads
@@ -30,13 +30,11 @@
 ; Setup https with app.gridr.io
 ; basic todo list using existing re-frame application working
 ; rename subs to subscriptions
-; rename folder structure
+; rename folder structure [DONE]
 ; make a side-effects file
 
 
 ; Manual steps:
-; Have to specify region separately as an endpoint to Faraday
-; Can use an env var for the table defined in the serverless.yml
 ; There's possibly out of the box executions
 ; Anybody can hit the endpoint
 ; Have to hook up the custom domain manually

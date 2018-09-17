@@ -1,4 +1,4 @@
-(ns re-frame-todo.config)
+(ns sparrow.config)
 
 (def debug?
   ^boolean goog.DEBUG)

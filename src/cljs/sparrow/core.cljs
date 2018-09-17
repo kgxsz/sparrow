@@ -1,11 +1,12 @@
-(ns re-frame-todo.core
+(ns sparrow.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [re-frame-todo.events]
-            [re-frame-todo.subs]
-            [re-frame-todo.views :as views]
-            [re-frame-todo.config :as config]))
+            [sparrow.config :as config]
+            [sparrow.events :as events]
+            [sparrow.subscriptions :as subscriptions]
+            [sparrow.views :as views]))
 
+;; TODO - do something smart here
 (defn dev-setup []
   (enable-console-print!)
   (js/console.warn "dev mode"))

@@ -4,6 +4,7 @@
                  [reagent "0.8.1"]
                  [re-frame "0.10.6"]
                  [cljs-ajax "0.7.4"]
+                 [medley "1.0.0"]
                  [com.amazonaws/aws-lambda-java-core "1.0.0"]
                  [com.taoensso/faraday "1.9.0"]
                  [cheshire "5.8.0"]]
@@ -28,8 +29,8 @@
 
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
-                        :figwheel {:on-jsload "re-frame-todo.core/mount-root"}
-                        :compiler {:main re-frame-todo.core
+                        :figwheel {:on-jsload "sparrow.core/mount-root"}
+                        :compiler {:main sparrow.core
                                    :output-to "resources/public/js/compiled/app.js"
                                    :output-dir "resources/public/js/compiled/out"
                                    :asset-path "js/compiled/out"
@@ -38,7 +39,7 @@
                                    :external-config {:devtools/config {:features-to-install :all}}}}
                        {:id "min"
                         :source-paths ["src/cljs"]
-                        :compiler {:main re-frame-todo.core
+                        :compiler {:main sparrow.core
                                    :output-to "resources/public/js/compiled/app.js"
                                    :optimizations :advanced
                                    :closure-defines {goog.DEBUG false}
