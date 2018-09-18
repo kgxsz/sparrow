@@ -17,6 +17,10 @@
                                                                 {:added-at added-at
                                                                  :text (str "item - " added-at)
                                                                  :checked? false}))
+          logger (.getLogger context)
+          request (cheshire/parse-stream (io/reader input-stream) true)
+          _ (.log logger (str request))
+          ;request-body (some-> request :body (.getBytes) io/input-stream)
           items (faraday/scan ddb-config "sparrow-items")
           response {:statusCode 200
                     :headers {"Access-Control-Allow-Origin" "*"}
