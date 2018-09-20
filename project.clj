@@ -23,8 +23,10 @@
                    :figwheel {:css-dirs ["resources/public/css"]}}
 
              :uberjar {:aot :all
-                       :uberjar-exclusions [#"resources/public/.*"]
-                       :uberjar-name "sparrow.jar"}}
+                       :uberjar-exclusions [#"resources/public/.*"
+                                            #"target/.*"]
+                       :uberjar-name "sparrow.jar"
+                       :auto-clean false}}
 
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
