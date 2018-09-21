@@ -7,40 +7,68 @@
    :name sparrow.Handler
    :implements [com.amazonaws.services.lambda.runtime.RequestStreamHandler]))
 
+
+(def ddb-config {:access-key (System/getenv "ACCESS_KEY")
+                 :secret-key (System/getenv "SECRET_KEY")
+                 :endpoint "http://dynamodb.eu-west-1.amazonaws.com"})
+
+(def table-name "sparrow-items")
+
+
+(defmulti handle-query (comp keyword first))
+
+(defmethod handle-query :items [query]
+  {:items (faraday/scan ddb-config table-name)})
+
+(defmethod handle-query :default [query]
+  (throw (Exception.)))
+
+
+(defmulti handle-command (comp keyword first))
+
+(defmethod handle-command :add-item [[_ added-at text checked?]]
+  (let [item {:added-at added-at :text text :checked? checked?}]
+    (faraday/put-item ddb-config table-name item))
+  {})
+
+(defmethod handle-command :delete-item [[_ added-at]]
+  (faraday/delete-item ddb-config table-name {:added-at added-at})
+  {})
+
+(defmethod handle-command :set-item-checked? [[_ added-at checked?]]
+  (faraday/update-item ddb-config table-name {:added-at added-at} {:update-map {:checked? [:put checked?]}})
+  {})
+
+(defmethod handle-command :default [command]
+  (throw (Exception.)))
+
+
+(defn read-input [reader]
+  (let [{:keys [body]} (cheshire/parse-stream reader true)
+        {:keys [query command]} (cheshire/parse-string body true)]
+    {:query query :command command}))
+
+
+(defn write-output [writer status-code body]
+  (let [response {:statusCode status-code
+                  :headers {"Access-Control-Allow-Origin" "*"}
+                  :body (cheshire/generate-string body)}]
+    (cheshire/generate-stream response writer)))
+
+
 (defn -handleRequest
   [_ input-stream output-stream context]
-  (with-open [writer (io/writer output-stream)]
-    (let [ddb-config {:access-key (System/getenv "ACCESS_KEY")
-                      :secret-key (System/getenv "SECRET_KEY")
-                      :endpoint "http://dynamodb.eu-west-1.amazonaws.com"}
-          #__      #_(faraday/put-item ddb-config "sparrow-items" (let [added-at (rand-int 9999999)]
-                                                                {:added-at added-at
-                                                                 :text (str "item - " added-at)
-                                                                 :checked? false}))
-          logger (.getLogger context)
-          request (cheshire/parse-stream (io/reader input-stream) true)
-          _ (.log logger (str request))
-          ;request-body (some-> request :body (.getBytes) io/input-stream)
-          items (faraday/scan ddb-config "sparrow-items")
-          response {:statusCode 200
-                    :headers {"Access-Control-Allow-Origin" "*"}
-                    :body (cheshire/generate-string {:items items})}]
-      (cheshire/generate-stream response writer))))
-
-; Look into adding an item to a DDB table every time you call the endpoint [DONE]
-; Split endpoints out into query and command, with post payloads
-; Tie query and command to two separate dummy tasks, mess around with postman
-; See about kicking a static webpage using Finch [DONE]
-; Setup https with app.gridr.io
-; basic todo list using existing re-frame application working
-; rename subs to subscriptions
-; rename folder structure [DONE]
-; make a side-effects file
+  (with-open [reader (io/reader input-stream)
+              writer (io/writer output-stream)]
+    (try
+      (let [{:keys [query command]} (read-input reader)]
+        (write-output writer 200 (or (some-> query handle-query)
+                                     (some-> command handle-command)
+                                     (throw (Exception.)))))
+      (catch Exception e
+        (write-output writer 500 {})))))
 
 
-; Manual steps:
-; There's possibly out of the box executions
-; Anybody can hit the endpoint
-; Have to hook up the custom domain manually
-; Gotta unhook the base path mapping manually before tearing down
-; consistent naming throughout? Don't care about stages, hide them
+; Error handling on optimistic updates
+; Dispatched query/command success/failure
+; Limit on ten items and return error

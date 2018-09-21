@@ -6,8 +6,7 @@
 (defn item-adder []
   (let [!input-value (re-frame/subscribe [:input-value])
         add-item-to-item-list (fn [e]
-                                (let [added-at (.now js/Date)]
-                                  (re-frame/dispatch [:add-item-to-item-list added-at]))
+                                (re-frame/dispatch [:add-item-to-item-list])
                                 (.preventDefault e))
         update-input-value (fn [e]
                              (let [input-value (-> e .-target .-value)]

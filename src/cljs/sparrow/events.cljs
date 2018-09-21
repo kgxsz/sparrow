@@ -61,12 +61,15 @@
 (re-frame/reg-event-fx
  :add-item-to-item-list
  [interceptors/schema]
- (fn [{:keys [db]} [_ added-at]]
-   (let [item {:added-at added-at
-               :text (:input-value db)
-               :checked? false}
+ (fn [{:keys [db]} [_]]
+   (let [added-at (.now js/Date)
+         text (:input-value db)
+         checked? false
+         item {:added-at added-at
+               :text text
+               :checked? checked?}
          sort-by-desc-added-at? (:sort-by-desc-added-at? db)]
-     {:command [:add-item added-at]
+     {:command [:add-item added-at text checked?]
       :db (-> db
               (assoc :input-value "")
               (assoc-in [:items-by-added-at added-at] item)
