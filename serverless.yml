@@ -20,7 +20,11 @@ functions:
     name: sparrow
     events:
       - http:
-          path: /
+          path: /query
+          method: post
+          cors: true
+      - http:
+          path: /command
           method: post
           cors: true
 

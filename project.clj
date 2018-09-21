@@ -12,8 +12,7 @@
 
   :plugins [[lein-cljsbuild "1.1.5"]]
 
-  :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                    "target"]
+  :clean-targets ^{:protect false} ["resources/public/js/compiled" "target"]
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.10"]
                                   [figwheel-sidecar "0.5.16"]
@@ -23,8 +22,7 @@
                    :figwheel {:css-dirs ["resources/public/css"]}}
 
              :uberjar {:aot :all
-                       :uberjar-exclusions [#"resources/public/.*"
-                                            #"target/.*"]
+                       :uberjar-exclusions [#"resources/public/.*" #"target/.*"]
                        :uberjar-name "sparrow.jar"
                        :auto-clean false}}
 

@@ -5,10 +5,24 @@
 
 (re-frame/reg-fx
  :query
- (fn [[query-type & args]]
-   (ajax/POST "https://api.gridr.io"
-              {:params {}
-               :handler (fn [response] (re-frame/dispatch [:query-succeeded query-type response]))
-               :error-handler (fn [response] (re-frame/dispatch [:query-failed query-type response]))
+ (fn [query]
+   (ajax/POST "https://api.gridr.io/query"
+              {:params {:query query}
+               :handler (fn [response] (re-frame/dispatch [:query-succeeded query response]))
+               :error-handler (fn [response] (re-frame/dispatch [:query-failed query response]))
                :response-format :json
+               :format :json
                :keywords? true})))
+
+
+(re-frame/reg-fx
+ :command
+ (fn [command]
+   (ajax/POST "https://api.gridr.io/command"
+              {:params {:command command}
+               :handler (fn [response] (re-frame/dispatch [:command-succeeded command response]))
+               :error-handler (fn [response] (re-frame/dispatch [:command-failed command response]))
+               :response-format :json
+               :format :json
+               :keywords? true})))
+

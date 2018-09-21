@@ -9,7 +9,6 @@
  [interceptors/schema]
  (fn [{:keys [db]} event]
    {:query [:items]
-    ;; TODO - use an initialising flag here
     :db {:items-by-added-at {}
          :item-list '()
          :input-value ""
@@ -19,8 +18,8 @@
 (re-frame/reg-event-fx
  :query-succeeded
  [interceptors/schema]
- (fn [{:keys [db]} [_ query-type {:keys [items] :as response}]]
-   (js/console.warn items)
+ (fn [{:keys [db]} [_ query {:keys [items] :as response}]]
+   (js/console.warn response)
    (let [keys (map :added-at items)
          sort-by-desc-added-at? (:sort-by-desc-added-at? db)]
      {:db (-> db
@@ -31,9 +30,25 @@
 (re-frame/reg-event-fx
  :query-failed
  [interceptors/schema]
- (fn [{:keys [db]} [_ query-type response]]
+ (fn [{:keys [db]} [_ query response]]
    (js/console.warn response)
-   {:db db #_(assoc db :input-value input-value)}))
+   {:db db}))
+
+
+(re-frame/reg-event-fx
+ :command-succeeded
+ [interceptors/schema]
+ (fn [{:keys [db]} [_ command response]]
+   (js/console.warn response)
+   {:db db}))
+
+
+(re-frame/reg-event-fx
+ :command-failed
+ [interceptors/schema]
+ (fn [{:keys [db]} [_ command response]]
+   (js/console.warn response)
+   {:db db}))
 
 
 (re-frame/reg-event-fx
@@ -51,7 +66,8 @@
                :text (:input-value db)
                :checked? false}
          sort-by-desc-added-at? (:sort-by-desc-added-at? db)]
-     {:db (-> db
+     {:command [:add-item added-at]
+      :db (-> db
               (assoc :input-value "")
               (assoc-in [:items-by-added-at added-at] item)
               (update-in [:item-list] (partial cons added-at))
@@ -62,14 +78,17 @@
  :toggle-item-checked?
  [interceptors/schema]
  (fn [{:keys [db]} [_ added-at]]
-   {:db (update-in db [:items-by-added-at added-at :checked?] not)}))
+   (let [checked? (not (get-in db [:items-by-added-at added-at :checked?]))]
+     {:command [:set-item-checked? added-at checked?]
+      :db (assoc-in db [:items-by-added-at added-at :checked?] checked?)})))
 
 
 (re-frame/reg-event-fx
  :delete-item-from-item-list
  [interceptors/schema]
  (fn [{:keys [db]} [_ added-at]]
-   {:db (-> db
+   {:command [:delete-item added-at]
+    :db (-> db
             (update :items-by-added-at dissoc added-at)
             (update :item-list #(remove (partial = added-at) %)))}))
 
