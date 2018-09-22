@@ -27,8 +27,10 @@
 (defmulti handle-command (comp keyword first))
 
 (defmethod handle-command :add-item [[_ added-at text checked?]]
-  (let [item {:added-at added-at :text text :checked? checked?}]
-    (faraday/put-item ddb-config table-name item))
+  (let [n (count (faraday/scan ddb-config table-name))
+        item {:added-at added-at :text text :checked? checked?}]
+    (when (< n 10)
+      (faraday/put-item ddb-config table-name item)))
   {})
 
 (defmethod handle-command :delete-item [[_ added-at]]
@@ -68,7 +70,4 @@
       (catch Exception e
         (write-output writer 500 {})))))
 
-
-; Error handling on optimistic updates
-; Dispatched query/command success/failure
 ; Limit on ten items and return error
