@@ -69,5 +69,3 @@
                                      (throw (Exception.)))))
       (catch Exception e
         (write-output writer 500 {})))))
-
-; Limit on ten items and return error

@@ -19,19 +19,19 @@
  :query-succeeded
  [interceptors/schema]
  (fn [{:keys [db]} [_ query {:keys [items] :as response}]]
-   (js/console.warn response)
-   (let [keys (map :added-at items)
-         sort-by-desc-added-at? (:sort-by-desc-added-at? db)]
-     {:db (-> db
-              (assoc :items-by-added-at (zipmap keys items))
-              (assoc :item-list (sort (if sort-by-desc-added-at? > <) keys)))})))
+   (case (-> query first keyword)
+     :items (let [keys (map :added-at items)
+                  sort-by-desc-added-at? (:sort-by-desc-added-at? db)]
+              {:db (-> db
+                       (assoc :items-by-added-at (zipmap keys items))
+                       (assoc :item-list (sort (if sort-by-desc-added-at? > <) keys)))})
+     (throw Exception.))))
 
 
 (re-frame/reg-event-fx
  :query-failed
  [interceptors/schema]
  (fn [{:keys [db]} [_ query response]]
-   (js/console.warn response)
    {:db db}))
 
 
@@ -39,7 +39,6 @@
  :command-succeeded
  [interceptors/schema]
  (fn [{:keys [db]} [_ command response]]
-   (js/console.warn response)
    {:db db}))
 
 
@@ -47,7 +46,6 @@
  :command-failed
  [interceptors/schema]
  (fn [{:keys [db]} [_ command response]]
-   (js/console.warn response)
    {:db db}))
 
 
