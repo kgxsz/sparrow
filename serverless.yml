@@ -28,14 +28,6 @@ functions:
           method: post
           cors: true
 
-plugins:
-  - serverless-finch
-
-custom:
-  client:
-    bucketName: app.gridr.io
-    distributionFolder: resources/public
-
 resources:
   Resources:
     sparrowItemsTable:
