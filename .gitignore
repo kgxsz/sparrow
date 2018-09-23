@@ -42,6 +42,9 @@ jspm_packages
 # Serverless directories
 .serverless
 
+# Firebase
+.firebase
+
 # Thumbnails
 ._*
 
