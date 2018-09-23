@@ -3,7 +3,6 @@
 ##### A repository to play around with AWS Lambda.
 
 ## Local development setup
-- Do an `npm intall`.
 - From any cljs file, do cider-jack-in-clojurescript via Cider .
 - Navigate to `localhost:3449`.
 
@@ -13,5 +12,5 @@
 - Build the backend with `lein uberjar`.
 - Build the frontend with `lein cljsbuild once min`.
 - Deploy the backend stack with `serverless deploy`.
-- Deploy the frontend stack with `serverless client deploy`.
-- Tear it all down with `serverless client remove` and `serverless remove`.
+- Deploy the frontend stack with `firebase deploy`.
+- Tear the infrastructure down with `serverless remove`.
