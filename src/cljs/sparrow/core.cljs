@@ -7,7 +7,7 @@
             [sparrow.subscriptions :as subscriptions]
             [sparrow.views :as views]))
 
-;; TODO - do something smart here
+
 (defn dev-setup []
   (enable-console-print!)
   (js/console.warn "dev mode"))
