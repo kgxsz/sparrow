@@ -25,21 +25,24 @@
                                   [figwheel-sidecar "0.5.16"]
                                   [cider/piggieback "0.3.9"]]
                    :plugins [[lein-figwheel "0.5.16"]]
-                   :prep-tasks [["garden" "once"]]
                    :figwheel {:css-dirs ["resources/public/css"]
-                              :server-logfile "target/figwheel_temp/logs/figwheel_server.log"}
-                   :garden {:builds [{:stylesheet sparrow.styles.core/app
-                                      :compiler {:output-to "resources/public/css/app.css"
-                                                 :pretty-print? false}}]}}
+                              :server-logfile "target/figwheel_temp/logs/figwheel_server.log"}}
 
              :uberjar {:aot :all
                        :uberjar-exclusions [#"resources/public/.*" #"target/.*"]
                        :uberjar-name "sparrow.jar"
-                       :auto-clean false
-                       :garden {:builds [{:source-paths ["src/main"]
-                                          :stylesheet sparrow.styles.core/app
-                                          :compiler {:output-to "resources/public/css/app.css"
-                                                     :pretty-print? false}}]}}}
+                       :auto-clean false}}
+
+  :garden {:builds [{:id "dev"
+                     :source-paths ["src/clj"]
+                     :stylesheet sparrow.styles.core/app
+                     :compiler {:output-to "resources/public/css/compiled/app.css"
+                                :pretty-print? true}}
+                    {:id "min"
+                     :source-paths ["src/clj"]
+                     :stylesheet sparrow.styles.core/app
+                     :compiler {:output-to "resources/public/css/compiled/app.css"
+                                :pretty-print? false}}]}
 
   :cljsbuild {:builds [{:id "dev"
                         :source-paths ["src/cljs"]
