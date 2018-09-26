@@ -7,6 +7,7 @@
             [garden.units :refer [px percent ms]]
             [normalize.core :refer [normalize]]))
 
+
 (defstyles app
 
   ;; third party css
@@ -21,7 +22,6 @@
   ;; fonts
   fonts/icomoon
 
-
   ;; components
   components/button
   components/calendar
@@ -29,7 +29,6 @@
   components/logo
   components/notification
   components/page
-  components/sad-message
   components/text
   components/user
   components/user-details)

@@ -149,8 +149,9 @@
     {:class (u/bem [:user-details__divider])}]])
 
 
-(defn calendar [{:keys [title subtitle colour]}]
-  (let [month-label-formatter (t.format/formatter "MMM")
+(defn calendar [{:keys [id title subtitle colour]}]
+  (let [!checked-dates (re-frame/subscribe [:checked-dates id])
+        month-label-formatter (t.format/formatter "MMM")
         day-label-formatter (t.format/formatter "E")
         date-label-formatter (t.format/formatter "EEEE do 'of' MMMM, Y")
         basic-formatter (t.format/formatters :basic-date)
@@ -181,96 +182,103 @@
                                     {:date (t.format/unparse basic-formatter date)
                                      :label (t.format/unparse month-label-formatter date)
                                      :visible? (> 8 (t/day date))})))]
-    [:div
-     {:class (u/bem [:calendar])}
-     [:div
-      {:class (u/bem [:calendar__header])}
-      [:span
-       {:class (u/bem [:text :font-size-huge :font-weight-bold :colour-black-light])}
-       title]
-      [:span
-       {:class (u/bem [:calendar__header__separator])}
-       [:span
-        {:class (u/bem [:text :font-size-huge :colour-grey-dark])}
-        "—"]]
-      [:span
-       {:class (u/bem [:text :font-size-huge :colour-grey-dark])}
-       subtitle]]
-     [:div
-      {:class (u/bem [:calendar__body])}
+    (fn []
       [:div
-       {:class (u/bem [:calendar__items])}
-       (doall
-        (for [{:keys [date label shaded?]} (make-items (t/today))]
-          (let [checked? true #_(contains? (set checked-dates) date)]
+       {:class (u/bem [:calendar])}
+       [:div
+        {:class (u/bem [:calendar__header])}
+        [:span
+         {:class (u/bem [:text :font-size-huge :font-weight-bold :colour-black-light])}
+         title]
+        [:span
+         {:class (u/bem [:calendar__header__separator])}
+         [:span
+          {:class (u/bem [:text :font-size-huge :colour-grey-dark])}
+          "—"]]
+        [:span
+         {:class (u/bem [:text :font-size-huge :colour-grey-dark])}
+         subtitle]]
+       [:div
+        {:class (u/bem [:calendar__body])}
+        [:div
+         {:class (u/bem [:calendar__items])}
+         (doall
+          (for [{:keys [date label shaded?]} (make-items (t/today))]
+            (let [add-checked-date (fn [] (re-frame/dispatch [:add-checked-date id date]))
+                  remove-checked-date (fn [] (re-frame/dispatch [:remove-checked-date id date]))
+                  checked? (contains? (set @!checked-dates) date)]
+              [:div
+               {:key date
+                :title label
+                :class (u/bem [:calendar__items__item
+                               (cond
+                                 checked? colour
+                                 shaded? :colour-grey-medium
+                                 :else :colour-grey-light)])
+                :on-click (if checked? remove-checked-date add-checked-date)}])))]
+        [:div
+         {:class (u/bem [:calendar__labels :horizontal])}
+         (doall
+          (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
             [:div
              {:key date
-              :title label
-              :class (u/bem [:calendar__items__item
-                             (cond
-                               checked? colour
-                               shaded? :colour-grey-medium
-                               :else :colour-grey-light)])}])))]
-      [:div
-       {:class (u/bem [:calendar__labels :horizontal])}
-       (doall
-        (for [{:keys [date label visible?]} (make-horizontal-labels (t/today))]
-          [:div
-           {:key date
-            :class (u/bem [:calendar__label :vertical])}
-           (when visible?
-             [:div
-              {:class (u/bem [:text :font-size-xx-small :font-weight-bold])}
-              label])]))]
-      [:div
-       {:class (u/bem [:calendar__labels :vertical])}
-       (doall
-        (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
-          [:div
-           {:key date
-            :class (u/bem [:calendar__label :horizontal])}
-           (when visible?
-             [:div
-              {:class (u/bem [:text :font-size-xx-small :font-weight-bold])}
-              label])]))]]
+              :class (u/bem [:calendar__label :vertical])}
+             (when visible?
+               [:div
+                {:class (u/bem [:text :font-size-xx-small :font-weight-bold])}
+                label])]))]
+        [:div
+         {:class (u/bem [:calendar__labels :vertical])}
+         (doall
+          (for [{:keys [date label visible?]} (make-vertical-labels (t/today))]
+            [:div
+             {:key date
+              :class (u/bem [:calendar__label :horizontal])}
+             (when visible?
+               [:div
+                {:class (u/bem [:text :font-size-xx-small :font-weight-bold])}
+                label])]))]]
 
-     [:div
-      {:class (u/bem [:calendar__footer])}]]))
+       [:div
+        {:class (u/bem [:calendar__footer])}]])))
 
 
 (defn app []
-  [:div
-   {:class (u/bem [:app])}
-   [:div
-    {:class (u/bem [:page])}
-    [:div
-     {:class (u/bem [:page__header])}]
-    [:div
-     {:class (u/bem [:page__body])}
-     [:div
-      {:class (u/bem [:user])}
-      [user-details {:first-name "Keigo"
-                     :avatar-url "/images/avatar.jpeg"}]
-      [calendar {:id 1
-                 :title "Exercise"
-                 :subtitle "weights or cardio, at least half an hour"
-                 :colour :colour-green-dark}]
-      [calendar {:id 2
-                 :title "Meditation"
-                 :subtitle "at least ten minutes"
-                 :colour :colour-yellow-dark}]
-      [calendar {:id 3
-                 :title "Coding"
-                 :subtitle "at least one commit"
-                 :colour :colour-purple-dark}]
-      [calendar {:id 4
-                 :title "journaling"
-                 :subtitle "writing or drawing, at least one entry"
-                 :colour :colour-blue-dark}]
-      [calendar {:id 5
-                 :title "Reading"
-                 :subtitle "Leisure or technical, at least a few pages"
-                 :colour :colour-red-dark}]]
-     #_[logo]]
-    [:div
-     {:class (u/bem [:page__footer])}]]])
+  (let [!initialising? (re-frame/subscribe [:initialising?])]
+    (fn []
+      [:div
+       {:class (u/bem [:app])}
+       [:div
+        {:class (u/bem [:page])}
+        [:div
+         {:class (u/bem [:page__header])}]
+        [:div
+         {:class (u/bem [:page__body])}
+         (if @!initialising?
+           [logo]
+           [:div
+            {:class (u/bem [:user])}
+            [user-details {:first-name "Keigo"
+                           :avatar-url "/images/avatar.jpeg"}]
+            [calendar {:id 1
+                       :title "Exercise"
+                       :subtitle "weights or cardio, at least half an hour"
+                       :colour :colour-green-dark}]
+            [calendar {:id 2
+                       :title "Meditation"
+                       :subtitle "at least ten minutes"
+                       :colour :colour-yellow-dark}]
+            [calendar {:id 3
+                       :title "Coding"
+                       :subtitle "at least one commit"
+                       :colour :colour-purple-dark}]
+            [calendar {:id 4
+                       :title "Journaling"
+                       :subtitle "writing or drawing, at least one entry"
+                       :colour :colour-blue-dark}]
+            [calendar {:id 5
+                       :title "Reading"
+                       :subtitle "leisure or technical, at least a few pages"
+                       :colour :colour-red-dark}]])]
+        [:div
+         {:class (u/bem [:page__footer])}]]])))

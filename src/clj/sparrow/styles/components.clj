@@ -6,45 +6,6 @@
             [normalize.core :refer [normalize]]))
 
 
-(defstyles button
-  [:.button
-   {:width (-> c/filling :xx-huge px)
-    :height (-> c/filling :xx-large px)
-    :padding-left (-> c/spacing :medium px)
-    :padding-right (-> c/spacing :medium px)
-    :display :flex
-    :align-items :center
-    :justify-content :space-between
-    :text-decoration :none
-    :border-top :none
-    :border-left :none
-    :border-right :none
-    :border-bottom :solid
-    :border-width (-> c/filling :xx-tiny px)
-    :border-top-left-radius (-> c/radius :large px)
-    :border-top-right-radius (-> c/radius :large px)
-    :cursor :pointer}
-
-   [:&:focus
-    {:outline :none}]
-
-   [:&--disabled
-    {:opacity 0.4
-     :cursor :default}]
-
-   [:&--border-color
-    (u/make-modifiers c/colour :border-color)]
-
-   [:&--background-color
-    (u/make-modifiers c/colour :background-color)]
-
-   [:&--margin-top
-    (u/make-modifiers c/spacing :margin-top px)]
-
-   [:&--margin-bottom
-    (u/make-modifiers c/spacing :margin-bottom px)]])
-
-
 (defstyles calendar
   [:.calendar
    {:margin-top (-> c/spacing :huge px)}
@@ -374,14 +335,6 @@
 
    [:&__footer
     {:min-height (-> c/spacing :xxx-large px)}]])
-
-
-(defstyles sad-message
-  [:.sad-message
-   {:width (-> c/proportion :100 percent)
-    :display :flex
-    :flex-direction :column
-    :align-items :center}])
 
 
 (defstyles text
