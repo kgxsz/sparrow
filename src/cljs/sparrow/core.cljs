@@ -15,7 +15,7 @@
 (defn mount-root []
   (re-frame/clear-subscription-cache!)
   (reagent/render [views/app]
-                  (.getElementById js/document "app")))
+                  (.getElementById js/document "root")))
 
 (defn ^:export init []
   (re-frame/dispatch-sync [:initialize-db])
