@@ -30,7 +30,9 @@
                               :server-logfile "target/figwheel_temp/logs/figwheel_server.log"}}
 
              :uberjar {:aot :all
-                       :uberjar-exclusions [#"resources/public/.*" #"target/.*"]
+                       :uberjar-exclusions [#"resources/public/.*"
+                                            #"target/.*"
+                                            #"src/clj/sparrow/styles/.*"]
                        :uberjar-name "sparrow.jar"
                        :auto-clean false}}
 

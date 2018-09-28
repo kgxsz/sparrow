@@ -12,13 +12,13 @@
                  :secret-key (System/getenv "SECRET_KEY")
                  :endpoint "http://dynamodb.eu-west-1.amazonaws.com"})
 
-(def table-name "sparrow-items")
+(def table-name "sparrow-calendars")
 
 
 (defmulti handle-query (comp keyword first))
 
-(defmethod handle-query :items [query]
-  {:items (faraday/scan ddb-config table-name)})
+(defmethod handle-query :calendars [query]
+  {:calendars (faraday/scan ddb-config table-name)})
 
 (defmethod handle-query :default [query]
   (throw (Exception.)))
@@ -26,20 +26,15 @@
 
 (defmulti handle-command (comp keyword first))
 
-(defmethod handle-command :add-item [[_ added-at text checked?]]
-  (let [n (count (faraday/scan ddb-config table-name))
-        item {:added-at added-at :text text :checked? checked?}]
-    (when (< n 10)
-      (faraday/put-item ddb-config table-name item)))
-  {})
+(defmethod handle-command :add-checked-date [[_ id date]]
+  (let [item (update (faraday/get-item ddb-config table-name {:id id}) :checked-dates #(-> % set (conj date) vec))]
+    (faraday/update-item ddb-config table-name {:id id} {:update-map {:checked-dates [:put (:checked-dates item)]}})
+    {}))
 
-(defmethod handle-command :delete-item [[_ added-at]]
-  (faraday/delete-item ddb-config table-name {:added-at added-at})
-  {})
-
-(defmethod handle-command :set-item-checked? [[_ added-at checked?]]
-  (faraday/update-item ddb-config table-name {:added-at added-at} {:update-map {:checked? [:put checked?]}})
-  {})
+(defmethod handle-command :remove-checked-date [[_ id date]]
+  (let [item (update (faraday/get-item ddb-config table-name {:id id}) :checked-dates #(-> % set (disj date) vec))]
+    (faraday/update-item ddb-config table-name {:id id} {:update-map {:checked-dates [:put (:checked-dates item)]}})
+    {}))
 
 (defmethod handle-command :default [command]
   (throw (Exception.)))

@@ -23,7 +23,6 @@
   fonts/icomoon
 
   ;; components
-  components/button
   components/calendar
   components/icon
   components/logo

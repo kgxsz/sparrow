@@ -30,15 +30,15 @@ functions:
 
 resources:
   Resources:
-    sparrowItemsTable:
+    sparrowCalendarsTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: sparrow-items
+        TableName: sparrow-calendars
         AttributeDefinitions:
-          - AttributeName: added-at
+          - AttributeName: id
             AttributeType: N
         KeySchema:
-          - AttributeName: added-at
+          - AttributeName: id
             KeyType: HASH
         ProvisionedThroughput:
           ReadCapacityUnits: 1
@@ -100,4 +100,4 @@ resources:
                         - 'arn:aws:dynamodb'
                         - Ref: 'AWS::Region'
                         - Ref: 'AWS::AccountId'
-                        - 'table/sparrow-items'
+                        - 'table/sparrow-calendars'

@@ -8,7 +8,7 @@
  :initialise
  [interceptors/schema]
  (fn [{:keys [db]} event]
-   {:query [:items]
+   {:query [:calendars]
     :db {:initialising? true
          :calendar-by-id {1 {:id 1 :checked-dates []}
                           2 {:id 2 :checked-dates []}
@@ -17,13 +17,15 @@
                           5 {:id 5 :checked-dates []}}}}))
 
 
-
 (re-frame/reg-event-fx
  :query-succeeded
  [interceptors/schema]
- (fn [{:keys [db]} [_ query {:keys [items] :as response}]]
+ (fn [{:keys [db]} [_ query {:keys [calendars] :as response}]]
+   (js/console.warn response)
    (case (-> query first keyword)
-     :items {:db (assoc db :initialising? false)}
+     :calendars {:db (-> db
+                         (assoc :initialising? false)
+                         (assoc :calendar-by-id (zipmap (map :id calendars) calendars)))}
      (throw Exception.))))
 
 
@@ -52,11 +54,13 @@
  :add-checked-date
  [interceptors/schema]
  (fn [{:keys [db]} [_ id date]]
-   {:db (update-in db [:calendar-by-id id :checked-dates] #(-> % set (conj date) vec))}))
+   {:command [:add-checked-date id date]
+    :db (update-in db [:calendar-by-id id :checked-dates] #(-> % set (conj date) vec))}))
 
 
 (re-frame/reg-event-fx
  :remove-checked-date
  [interceptors/schema]
  (fn [{:keys [db]} [_ id date]]
-   {:db (update-in db [:calendar-by-id id :checked-dates] #(-> % set (disj date) vec))}))
+   {:command [:remove-checked-date id date]
+    :db (update-in db [:calendar-by-id id :checked-dates] #(-> % set (disj date) vec))}))
