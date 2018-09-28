@@ -21,7 +21,6 @@
  :query-succeeded
  [interceptors/schema]
  (fn [{:keys [db]} [_ query {:keys [calendars] :as response}]]
-   (js/console.warn response)
    (case (-> query first keyword)
      :calendars {:db (-> db
                          (assoc :initialising? false)
