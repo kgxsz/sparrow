@@ -9,7 +9,7 @@ provider:
   apiName: sparrow
   role: sparrowRole
   deploymentBucket:
-    name: api.gridr.io
+    name: api.gridr.keigo.io
 
 package:
   artifact: target/sparrow.jar

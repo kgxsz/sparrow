@@ -8,7 +8,7 @@
 - Navigate to `localhost:3449`.
 
 ## Deployment
-- Ensure that the `api.gridr.io` bucket exist in AWS S3.
+- Ensure that the `api.gridr.keigo.io` bucket exist in AWS S3.
 - Start from a clean slate with `lein clean`.
 - Build the backend with `lein uberjar`.
 - Build the frontend with `lein cljsbuild once min`.
