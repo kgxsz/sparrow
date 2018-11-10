@@ -6,7 +6,7 @@
 (re-frame/reg-fx
  :query
  (fn [query]
-   (ajax/POST "https://api.gridr.io/query"
+   (ajax/POST "https://api.gridr.keigo.io/query"
               {:params {:query query}
                :handler (fn [response] (re-frame/dispatch [:query-succeeded query response]))
                :error-handler (fn [response] (re-frame/dispatch [:query-failed query response]))
@@ -18,7 +18,7 @@
 (re-frame/reg-fx
  :command
  (fn [command]
-   (ajax/POST "https://api.gridr.io/command"
+   (ajax/POST "https://api.gridr.keigo.io/command"
               {:params {:command command}
                :handler (fn [response] (re-frame/dispatch [:command-succeeded command response]))
                :error-handler (fn [response] (re-frame/dispatch [:command-failed command response]))
