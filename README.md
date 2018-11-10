@@ -12,6 +12,7 @@
 - Start from a clean slate with `lein clean`.
 - Build the backend with `lein uberjar`.
 - Build the frontend with `lein cljsbuild once min`.
+- Build the styling files: `lein garden once min`.
 - Deploy the backend stack with `serverless deploy`.
 - Deploy the frontend stack with `firebase deploy`.
 - Tear the infrastructure down with `serverless remove`.
