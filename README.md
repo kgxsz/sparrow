@@ -3,7 +3,7 @@
 ##### A repository to play around with AWS Lambda.
 
 ## Local development setup
-- From any cljs file, do cider-jack-in-clojurescript via Cider .
+- From any cljs file, do cider-jack-in-clojurescript via Cider.
 - For styling: `lein garden auto dev`.
 - Navigate to `localhost:3449`.
 
