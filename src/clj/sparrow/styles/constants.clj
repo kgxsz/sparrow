@@ -16,7 +16,8 @@
    :blue-medium "#F2F6FF"
    :blue-dark "#58A1F5"
    :red-light "#FFFAFB"
-   :red-dark "#EB5468"})
+   :red-dark "#EB5468"
+   :orange-dark "#EE8F66"})
 
 (def spacing
   {:xxx-tiny 1

@@ -192,18 +192,22 @@
                        :subtitle "weights or cardio, at least half an hour"
                        :colour :colour-green-dark}]
             [calendar {:id 2
+                       :title "Fooding"
+                       :subtitle "eat well and balanced"
+                       :colour :colour-orange-dark}]
+            [calendar {:id 3
                        :title "Meditation"
                        :subtitle "at least ten minutes"
                        :colour :colour-yellow-dark}]
-            [calendar {:id 3
+            [calendar {:id 4
                        :title "Coding"
                        :subtitle "at least one commit"
                        :colour :colour-purple-dark}]
-            [calendar {:id 4
+            [calendar {:id 5
                        :title "Journaling"
                        :subtitle "writing or drawing, at least one entry"
                        :colour :colour-blue-dark}]
-            [calendar {:id 5
+            [calendar {:id 6
                        :title "Reading"
                        :subtitle "leisure or technical, at least a few pages"
                        :colour :colour-red-dark}]])]
