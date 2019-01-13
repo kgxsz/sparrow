@@ -200,16 +200,16 @@
                        :subtitle "at least ten minutes"
                        :colour :colour-yellow-dark}]
             [calendar {:id 4
-                       :title "Coding"
-                       :subtitle "at least one commit"
+                       :title "Projects"
+                       :subtitle "a bit of coding or design work"
                        :colour :colour-purple-dark}]
             [calendar {:id 5
                        :title "Journaling"
-                       :subtitle "writing or drawing, at least one entry"
+                       :subtitle "some writing or drawing"
                        :colour :colour-blue-dark}]
             [calendar {:id 6
                        :title "Reading"
-                       :subtitle "leisure or technical, at least a few pages"
+                       :subtitle "book, podcast, or audiobook"
                        :colour :colour-red-dark}]])]
         [:div
          {:class (u/bem [:page__footer])}]]])))
