@@ -193,7 +193,7 @@
                        :colour :colour-green-dark}]
             [calendar {:id 2
                        :title "Fooding"
-                       :subtitle "eat well and balanced"
+                       :subtitle "maintain a balanced diet"
                        :colour :colour-orange-dark}]
             [calendar {:id 3
                        :title "Meditation"
