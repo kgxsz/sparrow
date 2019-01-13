@@ -192,7 +192,7 @@
                        :subtitle "weights or cardio, at least half an hour"
                        :colour :colour-green-dark}]
             [calendar {:id 2
-                       :title "Fooding"
+                       :title "Eating"
                        :subtitle "maintain a balanced diet"
                        :colour :colour-orange-dark}]
             [calendar {:id 3
