@@ -90,7 +90,8 @@
                                   (t/days 1))]
                         {:date (t.format/unparse basic-formatter date)
                          :label (t.format/unparse date-label-formatter date)
-                         :shaded? (odd? (t/month date))})))
+                         :shaded? (odd? (t/month date))
+                         :protected? (t/before? date (t/minus- today (t/days 6)))})))
         make-vertical-labels (memoize
                               (fn [today]
                                 (for [date (t.periodic/periodic-seq
@@ -130,7 +131,7 @@
         [:div
          {:class (u/bem [:calendar__items])}
          (doall
-          (for [{:keys [date label shaded?]} (make-items (t/today))]
+          (for [{:keys [date label shaded? protected?]} (make-items (t/today))]
             (let [add-checked-date (fn [] (re-frame/dispatch [:add-checked-date id date]))
                   remove-checked-date (fn [] (re-frame/dispatch [:remove-checked-date id date]))
                   checked? (contains? (set @!checked-dates) date)]
@@ -142,7 +143,10 @@
                                  checked? colour
                                  shaded? :colour-grey-medium
                                  :else :colour-grey-light)])
-                :on-click (if checked? remove-checked-date add-checked-date)}])))]
+                :on-click (when-not protected?
+                              (if checked?
+                                remove-checked-date
+                                add-checked-date))}])))]
         [:div
          {:class (u/bem [:calendar__labels :horizontal])}
          (doall
